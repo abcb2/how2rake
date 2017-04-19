@@ -1,6 +1,19 @@
+source_files = Rake::FileList.new("**/*.md", "**/*.markdown") do |fl|
+  fl.exclude("~*")
+  fl.exclude("README.md")
+  fl.exclude(/^scratch\//)
+  fl.exclude do |f|
+    `git ls-files #{f}`.empty?
+  end
+end
+
 task :default => :html
-task :html => %W[ch1.html ch2.html ch3.html]
+task :html => source_files.ext(".html")
 
 rule ".html" => ".md" do |t|
+  sh "pandoc -o #{t.name} #{t.source}"
+end
+
+rule ".html" => ".markdown" do |t|
   sh "pandoc -o #{t.name} #{t.source}"
 end
