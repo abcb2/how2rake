@@ -1,4 +1,4 @@
-Rake.application.options.trace_rules = true
+# Rake.application.options.trace_rules = true
 
 SOURCE_FILES = Rake::FileList.new("**/*.md", "**/*.markdown") do |fl|
   fl.exclude("~*")
@@ -10,12 +10,18 @@ SOURCE_FILES = Rake::FileList.new("**/*.md", "**/*.markdown") do |fl|
 end
 
 def source_for_html(html_file)
-  SOURCE_FILES.detect { |f| f.ext('') == html_file.ext('') }
+  SOURCE_FILES.detect { |f|
+    f.ext('') == html_file.pathmap("%{^outputs/,project/}X")
+  }
 end
 
 task :default => :html
-task :html => SOURCE_FILES.ext(".html")
+task :html => SOURCE_FILES.pathmap("%{^project/,outputs/}X.html")
 
-rule ".html" => ->(f) { source_for_html(f) } do |t|
+# directoryの作成
+directory "outputs"
+
+rule ".html" => [->(f) { source_for_html(f) }, "outputs"] do |t|
+  mkdir_p t.name.pathmap("%d")
   sh "pandoc -o #{t.name} #{t.source}"
 end
