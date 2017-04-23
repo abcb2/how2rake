@@ -1,6 +1,6 @@
 Rake.application.options.trace_rules = true
 
-source_files = Rake::FileList.new("**/*.md", "**/*.markdown") do |fl|
+SOURCE_FILES = Rake::FileList.new("**/*.md", "**/*.markdown") do |fl|
   fl.exclude("~*")
   fl.exclude("README.md")
   fl.exclude(/^scratch\//)
@@ -9,13 +9,13 @@ source_files = Rake::FileList.new("**/*.md", "**/*.markdown") do |fl|
   end
 end
 
-task :default => :html
-task :html => source_files.ext(".html")
-
-rule ".html" => ".md" do |t|
-  sh "pandoc -o #{t.name} #{t.source}"
+def source_for_html(html_file)
+  SOURCE_FILES.detect { |f| f.ext('') == html_file.ext('') }
 end
 
-# rule ".html" => ".markdown" do |t|
-#   sh "pandoc -o #{t.name} #{t.source}"
-# end
+task :default => :html
+task :html => SOURCE_FILES.ext(".html")
+
+rule ".html" => ->(f) { source_for_html(f) } do |t|
+  sh "pandoc -o #{t.name} #{t.source}"
+end
