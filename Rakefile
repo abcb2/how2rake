@@ -1,4 +1,5 @@
-# Rake.application.options.trace_rules = true
+Rake.application.options.trace_rules = true
+require "rake/clean"
 
 SOURCE_FILES = Rake::FileList.new("**/*.md", "**/*.markdown") do |fl|
   fl.exclude("~*")
@@ -25,3 +26,6 @@ rule ".html" => [->(f) { source_for_html(f) }, "outputs"] do |t|
   mkdir_p t.name.pathmap("%d")
   sh "pandoc -o #{t.name} #{t.source}"
 end
+
+CLEAN.include(SOURCE_FILES.pathmap("%{^project,outputs}X.html"))
+CLOBBER.include("outputs")
