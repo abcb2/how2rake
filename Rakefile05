@@ -1,0 +1,17 @@
+src_files = Rake::FileList.new("src/*.md")
+pathmapped_files = src_files.pathmap("%{src,out}X.html")
+p src_files
+p pathmapped_files
+
+task default: :create_html
+task :create_html => pathmapped_files
+
+rule %r{out/.+\.html} => '%{^out,src}X.md' do |t|
+  mkdir_p t.name.pathmap("%d")
+  puts "convert #{t.source} to #{t.name}"
+end
+
+desc "rm -rf out/"
+task :clean do
+  rm_rf "out"
+end
