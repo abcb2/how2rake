@@ -1,0 +1,17 @@
+task default: 'basic:hello'
+
+namespace :basic do
+  desc "hello"
+  task :hello do
+    puts "Hello Rake!!"
+  end
+end
+
+namespace :foo do
+  namespace :bar do
+    desc "foo bar hoge!!"
+    task :hoge do
+      puts "foo:bar:hoge!!"
+    end
+  end
+end
