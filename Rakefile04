@@ -1,0 +1,13 @@
+desc "hello task"
+task :hello, [:name, :job] => [:hi, :bye]
+
+
+task :hi, [:name, :job] do |task, args|
+  puts "DEBUG: #{task}, #{args}"
+  puts "Hi #{args[:name]}, #{args[:job]}"
+end
+
+task :bye, [:name, :job] do |task, args|
+  puts "DEBUG: #{task}, #{args}"
+  puts "bye #{args[:name]}, #{args[:job]}"
+end
