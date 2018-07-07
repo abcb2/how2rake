@@ -1,0 +1,10 @@
+desc "invoke foo bar"
+task :hello => %w[foo bar]
+
+task :foo do
+  puts "hello foo"
+end
+
+task :bar do
+  puts "hello bar"
+end
